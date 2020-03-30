@@ -47,6 +47,32 @@ def _merged(xs, ys, cmp=cmp_standard):
     Runs in linear time.
     '''
 
+    i = 0
+    j = 0
+    merge = []
+
+    while i < len(xs) and j < len(ys):
+        if cmp(xs[i],ys[j]) == -1:
+            merge.append(xs[i])
+            i += 1
+        elif cmp(xs[i],ys[j]) == 1:
+            merge.append(ys[j])
+            j += 1
+        elif cmp(xs[i],ys[j]) == 0:
+            merge.append(xs[i])
+            merge.append(ys[j])
+            i += 1
+            j += 1
+
+    while i < len(xs):
+        merge.append(xs[i])
+        i += 1
+
+    while j < len(ys):
+        merge.append(ys[j])
+        j += 1
+
+    return merge
 
 def merge_sorted(xs, cmp=cmp_standard):
     '''
@@ -64,13 +90,22 @@ def merge_sorted(xs, cmp=cmp_standard):
     You should return a sorted version of the input list xs
     '''
 
+    if len(xs) <= 1:
+        return xs
+    else:
+        mid = len(xs)//2
+        left = xs[:mid]
+        right = xs[mid:]
+        l = merge_sorted(left,cmp)
+        r = merge_sorted(right,cmp)
+        return _merged(l,r,cmp)
 
 def quick_sorted(xs, cmp=cmp_standard):
     '''
     Quicksort is like mergesort,
     but it uses a different strategy to split the list.
     Instead of splitting the list down the middle,
-    a "pivot" value is randomly selected, 
+    a "pivot" value is randomly selected,
     and the list is split into a "less than" sublist and a "greater than" sublist.
 
     The pseudocode is:
@@ -86,6 +121,28 @@ def quick_sorted(xs, cmp=cmp_standard):
 
     You should return a sorted version of the input list xs
     '''
+
+    less = []
+    more = []
+    equal = []
+
+
+    if len(xs) <= 1:
+        return xs
+    else:
+       p = xs[0]
+       for i in range(len(xs)):
+           if cmp(p,xs[i]) == 1:
+               less.append(xs[i])
+           elif cmp(p,xs[i]) == -1:
+               more.append(xs[i])
+           elif cmp(p,xs[i]) == 0:
+               equal.append(xs[i])
+
+       m = quick_sorted(more,cmp)
+       l = quick_sorted(less,cmp)
+       concatenation = l + equal + m
+       return concatenation
 
 
 def quick_sort(xs, cmp=cmp_standard):
